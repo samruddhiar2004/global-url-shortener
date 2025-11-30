@@ -1,0 +1,10 @@
+# Ignore dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Ignore secrets
+.env
+
+# Ignore build files
+frontend/dist/
