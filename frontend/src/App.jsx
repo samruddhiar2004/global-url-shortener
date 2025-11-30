@@ -9,33 +9,32 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState('');
 
-  // Logic to Shorten URL
+  // 👇 THIS IS THE IMPORTANT CHANGE
+  // We now talk to the Cloud Backend, not Localhost
+  const BACKEND_URL = 'https://global-url-shortener.onrender.com';
+
   const handleShorten = async () => {
     if (!longUrl) return alert("Please enter a URL!");
-    
     setLoading(true);
-    
     try {
-      const response = await axios.post('http://localhost:5000/api/shorten', {
+      // connecting to the cloud...
+      const response = await axios.post(`${BACKEND_URL}/api/shorten`, {
         originalUrl: longUrl
       });
-      setShortUrl(`http://localhost:5000/${response.data.shortId}`);
+      setShortUrl(`${BACKEND_URL}/${response.data.shortId}`);
     } catch (error) {
       console.error(error);
-      alert("Failed to shorten URL. Is the backend running?");
+      alert("Backend is waking up! Wait 30s and try again.");
     }
-    
     setLoading(false);
   };
 
-  // Logic to Clear
   const handleClear = () => {
     setLongUrl('');
     setShortUrl('');
     setCopySuccess('');
   };
 
-  // Logic to Copy
   const handleCopy = () => {
     navigator.clipboard.writeText(shortUrl);
     setCopySuccess('Copied! ✅');
@@ -47,8 +46,6 @@ function App() {
       <div className="glass-container">
         <h1>✨ Global Shortener</h1>
         <p className="subtitle">Shorten your links. Expand your reach.</p>
-
-        {/* INPUT SECTION */}
         <div className="input-wrapper">
           <input 
             type="text" 
@@ -60,7 +57,6 @@ function App() {
             <button className="clear-btn" onClick={handleClear}>✖</button>
           )}
         </div>
-
         <button 
           className="main-btn" 
           onClick={handleShorten} 
@@ -68,8 +64,6 @@ function App() {
         >
           {loading ? "✨ Shortening..." : "Shorten Now"}
         </button>
-
-        {/* RESULT SECTION */}
         {shortUrl && (
           <div className="result-card">
             <p>Here is your short link:</p>
